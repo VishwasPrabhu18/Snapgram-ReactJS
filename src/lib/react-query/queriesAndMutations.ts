@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tansta
 import {
   signInAccount, signOutAccount,
   createPost, createUserAccount, getRecentPosts,
-  likePost, savePost,
-  deleteSavedPost
+  likePost, savePost, deleteSavedPost,
+  getCurrentUser
 } from "../appwrite/api";
 import { INewPost, INewUser } from "@/types";
 import { QUERY_KEYS } from "./queryKey";
@@ -116,5 +116,12 @@ export const useDeleteSavedPost = () => {
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
       })
      }
+  });
+}
+
+export const useGetCurrentUser = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+    queryFn: () => getCurrentUser(),
   });
 }
