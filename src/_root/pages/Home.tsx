@@ -1,11 +1,19 @@
 import Loader from "@/components/shared/Loader";
 import PostCard from "@/components/shared/PostCard";
+import { toast } from "@/components/ui/use-toast";
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 import { Models } from "appwrite";
 
 const Home = () => {
 
   const { data: posts, isPending: isPostLoading, isError: isErrorPosts } = useGetRecentPosts();
+
+  if (isErrorPosts) {
+    toast({
+      title: "Error while fetching posts",
+      variant: "destructive"
+    });
+  }
 
   return (
     <div className="flex flex-1">
@@ -17,14 +25,14 @@ const Home = () => {
             isPostLoading && !posts ? (
               <Loader />
             ) : (
-                <ul className="flex flex-col flex-1 gap-9 w-full">
-                  {
-                    posts?.documents.map((post: Models.Document) => (
-                      <li key={post.$id}>
-                        <PostCard post={post} />
-                      </li>
-                    ))
-                  }
+              <ul className="flex flex-col flex-1 gap-9 w-full">
+                {
+                  posts?.documents.map((post: Models.Document) => (
+                    <li key={post.$id}>
+                      <PostCard post={post} />
+                    </li>
+                  ))
+                }
               </ul>
             )
           }
