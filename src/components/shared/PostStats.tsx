@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 import Loader from "./Loader";
 
 type PostStatsProps = {
-  post: Models.Document;
+  post?: Models.Document;
   userId: string;
 }
 
 const PostStats = ({ post, userId }: PostStatsProps) => {
 
-  const likesList = post.likes.map((user: Models.Document) => user.$id);
+  const likesList = post?.likes.map((user: Models.Document) => user.$id);
 
   const [likes, setLikes] = useState(likesList);
   const [isSaved, setIsSaved] = useState(false);
@@ -25,7 +25,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const { mutate: savePost, isPending: isSavingPost } = useSavePost();
   const { mutate: deleteSavedPost, isPending: isDeleteSave } = useDeleteSavedPost();
 
-  const savePostRecord = currentUser?.save.find((record: Models.Document) => record.post.$id === post.$id)
+  const savePostRecord = currentUser?.save.find((record: Models.Document) => record.post?.$id === post?.$id)
 
   useEffect(() => {
     setIsSaved(!!savePostRecord);
@@ -45,7 +45,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     }
 
     setLikes(newLikes);
-    likePost({ postId: post.$id, likesArray: newLikes });
+    likePost({ postId: post?.$id || '', likesArray: newLikes });
   };
 
   const handleSavePost = (e: React.MouseEvent) => {
@@ -53,9 +53,9 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
     if (savePostRecord) {
       setIsSaved(false);
-      deleteSavedPost({ savedRecordId: savePostRecord.$id });
+      deleteSavedPost(savePostRecord.$id);
     } else {
-      savePost({ postId: post.$id, userId });
+      savePost({ postId: post?.$id || '', userId });
       setIsSaved(true);
     }
   };
@@ -78,7 +78,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         {isSavingPost || isDeleteSave ? (
           <>
             <Loader />
-            <p className="small-medium lg:base-medium">{ isSavingPost ? "Saving" : "Unsaving" }</p>
+            <p className="small-medium lg:base-medium">{isSavingPost ? "Saving" : "Unsaving"}</p>
           </>
         ) :
           <img
